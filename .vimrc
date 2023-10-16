@@ -93,3 +93,12 @@ autocmd BufReadPost *
 
 
 autocmd FileType c syntax enable
+
+" update cscope index
+map <f12> : call ReConnectCscope()<cr>
+func! ReConnectCscope()
+    exec "cs kill 0"
+    exec "!./generate.sh"
+    exec "cs add cscope.out"
+endfunc
+
