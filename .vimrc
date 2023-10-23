@@ -94,6 +94,17 @@ autocmd BufReadPost *
 
 autocmd FileType c syntax enable
 
+" cscope shortcut
+noremap <leader>cs :cs find s
+noremap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+noremap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+noremap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+noremap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+noremap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+noremap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+noremap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+noremap <C-\>i :cs find i <C-R>=expand("<cfile>")<CR><CR>
+
 " update cscope index
 map <f12> : call ReConnectCscope()<cr>
 func! ReConnectCscope()
@@ -102,3 +113,27 @@ func! ReConnectCscope()
     exec "cs add cscope.out"
 endfunc
 
+set cscopequickfix=c-,d-,e-,g-,i-,s-,t-
+nmap <C-n> :cnext<CR>
+nmap <C-p> :cprev<CR>
+
+" Define a function to switch between .c and .h files
+function! SwitchCHeader()
+  let current_file = expand('%')
+  if current_file =~ '\.c$'
+    " If the current file is a .c file, switch to the corresponding .h file
+    let header_file = substitute(current_file, '\.c$', '.h', '')
+  elseif current_file =~ '\.h$'
+    " If the current file is a .h file, switch to the corresponding .c file
+    let header_file = substitute(current_file, '\.h$', '.c', '')
+  else
+    " If it's not .c or .h, do nothing
+    return
+  endif
+
+  " Open the corresponding .c or .h file
+  execute 'edit' header_file
+endfunction
+
+" Map <Leader>f to call the function
+nnoremap <Leader>f :call SwitchCHeader()<CR>
