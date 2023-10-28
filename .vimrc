@@ -11,6 +11,8 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'easymotion/vim-easymotion'
 Plugin 'preservim/nerdtree'
+Plugin 'itchyny/lightline.vim'
+Plugin 'itchyny/vim-cursorword'
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -137,3 +139,22 @@ endfunction
 
 " Map <Leader>f to call the function
 nnoremap <Leader>f :call SwitchCHeader()<CR>
+
+" To configure the charater used for spaces
+set nolist
+set listchars=space:·,tab:^I,eol:$
+" Toggle display of space characters
+nnoremap <Leader>l :set list!<CR>
+
+" To remove trailing white spaces from each line
+nnoremap <leader>k :%s/\s\+$//g<CR>
+
+" To enable or disable line number
+set nonu
+
+" Define a custom highlight group for the cursor word
+" highlight CursorWord ctermbg=lightblue guibg=lightblue
+" autocmd CursorMoved * exe printf('match CursorWord /\<%s\>/', expand('<cword>'))
+
+" enable highlight search
+" set hlsearch
