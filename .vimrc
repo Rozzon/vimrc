@@ -1,6 +1,7 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
+colorscheme desert
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -12,7 +13,7 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'easymotion/vim-easymotion'
 Plugin 'preservim/nerdtree'
 Plugin 'itchyny/lightline.vim'
-Plugin 'itchyny/vim-cursorword'
+Plugin 'kien/ctrlp.vim'
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -65,12 +66,32 @@ map <Leader>k <Plug>(easymotion-k)
 
 let mapleader=","
 
+" Start NERDTree and put the cursor back in the other window.
+"autocmd VimEnter * NERDTree | wincmd p
+
+" Start NERDTree. If a file is specified, move the cursor to its window.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
+
+" Start NERDTree, unless a file or session is specified, eg. vim -S session_file.vim.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists('s:std_in') && v:this_session == '' | NERDTree | endif
+
 " Start NERDTree when Vim starts with a directory argument.
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
     \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
+
 " Exit Vim if NERDTree is the only window remaining in the only tab.
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+" nerdtree change the default arrows
+" let g:NERDTreeDirArrowExpandable = '?'
+" let g:NERDTreeDirArrowCollapsible = '?'
+
+" nerdtree show lines of files, enable NERDTreeFileLines will stuck a little time
+" let g:NERDTreeFileLines = 1
+
 nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
@@ -150,11 +171,40 @@ nnoremap <Leader>l :set list!<CR>
 nnoremap <leader>k :%s/\s\+$//g<CR>
 
 " To enable or disable line number
-set nonu
+set nu
+set relativenumber
 
 " Define a custom highlight group for the cursor word
 " highlight CursorWord ctermbg=lightblue guibg=lightblue
 " autocmd CursorMoved * exe printf('match CursorWord /\<%s\>/', expand('<cword>'))
 
 " enable highlight search
-" set hlsearch
+set hlsearch
+" highlights the current line
+"set cursorline
+" highlight the current column
+set cursorcolumn
+
+"nnoremap <F5> :match StatusLineTerm /<C-R><C-W>/<CR>
+"nnoremap <F6> :match StatusLineTerm /\<\C-R\><\C-W>\>/\<CR\>
+nnoremap <F5> :execute 'match StatusLineTerm /\V\<'.escape(expand('<cword>'), '/\').'\>/'<CR>
+
+" ==========================================================================
+" ctrlp plugin settings
+let g:ctrlp_map = '<c-k>'
+let g:ctrlp_cmd = 'CtrlP>'
+" when invoked, unless a starting directory is specified, CtrlP will set its
+" local working directory according to this variable:
+" 'r' - the nearest ancestor that contains one of these directories or files:
+"   .git .hg .svn .bzr _darcs
+let g:ctrlp_working_path_mode = 'ra'
+" Exclude files and directories using Vim's wildignore and CtrlP's own g:ctrlp_custom_ignore:
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
+
+let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ 'link': 'some_bad_symbolic_links',
+  \ }
