@@ -208,3 +208,10 @@ let g:ctrlp_custom_ignore = {
   \ 'file': '\v\.(exe|so|dll)$',
   \ 'link': 'some_bad_symbolic_links',
   \ }
+
+nnoremap <leader>p :echo expand('%:p')<CR>
+nnoremap <S-k> :resize -1<CR>             
+nnoremap <S-j> :resize +1<CR>             
+nnoremap <S-l> :vertical resize -1<CR>    
+nnoremap <S-h> :vertical resize +1<CR>    
+
